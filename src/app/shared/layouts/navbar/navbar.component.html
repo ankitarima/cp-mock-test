@@ -1,0 +1,247 @@
+
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="assets/images/logo.png" height="32"alt="">
+          </a>
+          <div class="text-end">
+              <button type="button" class="btn mx-1 login-btn"
+              *ngIf="(afAuth.authState | async) === null" (click)="clear()"
+              data-bs-toggle="modal" data-bs-target="#login">Login</button>
+              <button class="btn mx-1 sign-up-btn"
+              *ngIf="(afAuth.authState | async) === null" (click)="clear()"
+              data-bs-toggle="modal" data-bs-target="#signup">Sing up</button>
+
+              <button class="btn mx-1 login-btn" [routerLink]="['/test/user']"
+              *ngIf="(afAuth.authState | async)">
+              <i style="font-size: .875rem;" class="far fa-user"></i></button>
+              <button class="btn mx-1 sign-up-btn"
+              *ngIf="(afAuth.authState | async)" (click)="logOut()">
+              <i style="font-size: .875rem;" class="fas fa-sign-out-alt"></i></button>
+          </div>
+      </div>
+  </nav>
+</header>
+
+<!-- Login Modal -->
+<div class="modal fade" id="login" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginLabel">Login</h5>
+        <button type="button" id="logincbtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <div class="row justify-content-center">
+            <div class="col-10">
+              <div class="alert alert-danger" role="alert" *ngIf="message">
+                {{message}}
+              </div>
+              <div class="mb-3">
+                <label for="emal" class="form-label" >Email address</label>
+                <input type="email" class="form-control" id="emal" formControlName="email">
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label" >Password</label>
+                <input type="password" class="form-control" id="password" formControlName="password">
+              </div>
+              <div class="m-4 text-center">
+                <button type="submit" class="btn login-btn" style="padding: 5px 25px;"
+                *ngIf="!isloading"
+                >login</button>
+                <button class="btn login-btn" type="button" disabled *ngIf="isloading">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  logining in ...
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="m-0 text-center">
+          <p class="m-0">or</p>
+        </div>
+        <div class=" m-3  text-center">
+          <button class="btn gbtn" (click)="glogin()">
+            <i class="fab fa-google"></i> Login with Google
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Signup Modal -->
+<div class="modal fade" id="signup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="signupLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signupLabel">Signup</h5>
+        <button type="button" id="signupcbtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <form [formGroup]="signupForm" (ngSubmit)="signup();">
+          <div class="row justify-content-center">
+            <div class="col-11">
+              <div class="alert alert-danger" role="alert" *ngIf="message">
+                {{message}}
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-2">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="name" formControlName="name">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-2">
+                    <label for="phone" class="form-label">Mobile no.</label>
+                    <input type="text" class="form-control" id="phone" formControlName="mobile">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-2">
+                    <label class="form-label" for="">Choose your standered</label>
+                    <br>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="class" id="12th" value="12th" formControlName="class">
+                      <label class="form-check-label" for="12th">12<sup>th</sup></label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="class" id="dropper" value="dropper" formControlName="class">
+                      <label class="form-check-label" for="dropper">Dropper</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-2">
+                    <label for="home_state" class="form-label">Home State</label>
+                    <select name="home_state" class="form-control" id="home_state" formControlName="state">
+                      <option value="" selected disabled>Select state</option>
+                      <option value="{{state|lowercase}}" *ngFor="let state of states">{{state}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-2">
+                    <label for="semal" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="semal" formControlName="semail">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="mb-2">
+                    <label for="spassword" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="spassword" formControlName="spassword">
+                  </div>
+                </div>
+              </div>
+              <div class="m-2 text-center">
+                <button type="submit" class="btn login-btn" style="padding: 5px 25px;"
+                *ngIf="!isloading"
+                >Signup</button>
+                <button class="btn login-btn" type="button" disabled *ngIf="isloading">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  signing up...
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="m-2 text-center">
+          <p class="m-0">or</p>
+        </div>
+        <div class=" m-2  text-center">
+          <button class="btn gbtn" (click)="glogin();">
+            <i class="fab fa-google"></i> Signup with Google
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Save modal  -->
+
+<button id="saveModal" class="btn mx-1 sign-up-btn" data-bs-toggle="modal" data-bs-target="#save" hidden></button>
+
+
+<div class="modal fade" id="save" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="saveLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="saveLabel">Signup</h5>
+        <button type="button" id="savecbtn" class="btn-close" data-bs-dismiss="modal" aria-label="Close" hidden></button>
+      </div>
+      <div class="modal-body p-0">
+        <form [formGroup]="saveForm" (ngSubmit)="save();">
+          <div class="row justify-content-center">
+            <div class="col-10">
+              <div class="alert alert-primary" role="alert">
+               Please complete your signup process ... or <a href="#" (click)="logOut()">logout</a>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-2">
+                    <input type="text" class="form-control" id="guid" formControlName="guid" hidden>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="mb-2">
+                    <label for="gname" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="gname" formControlName="gname">
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="mb-2">
+                    <label for="gphone" class="form-label">Mobile no.</label>
+                    <input type="text" class="form-control" id="gphone" formControlName="gmobile">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-2">
+                    <label class="form-label" for="">Choose your standered</label>
+                    <br>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="gclass" id="g12th" value="12th" formControlName="gclass">
+                      <label class="form-check-label" for="g12th">12<sup>th</sup></label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="gclass" id="gdropper" value="dropper" formControlName="gclass">
+                      <label class="form-check-label" for="gdropper">Dropper</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="mb-2">
+                    <label for="ghome_state" class="form-label">Home State</label>
+                    <select name="ghome_state" class="form-control" id="ghome_state" formControlName="gstate">
+                      <option value="" selected disabled>Select state</option>
+                      <option value="{{state|lowercase}}" *ngFor="let state of states">{{state}}</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="m-4 text-center">
+                <button type="submit" class="btn login-btn" style="padding: 5px 25px;"
+                *ngIf="!isloading"
+                >Save</button>
+                <button class="btn login-btn" type="button" disabled *ngIf="isloading">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  saving ...
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <img src="assets/images/logo.png" height="32"alt="">
+          </a>
+          <div class="text-end">
+              <button type="button" class="btn mx-1 login-btn"
+              *ngIf="(afAuth.authState | async) === null"
+              data-bs-toggle="modal" data-bs-target="#login">Login</button>
+              <button class="btn mx-1 sign-up-btn"
+              *ngIf="(afAuth.authState | async) === null"
+              data-bs-toggle="modal" data-bs-target="#signup">Sing up</button>
+
+              <button class="btn mx-1 sign-up-btn"
+              *ngIf="(afAuth.authState | async)" (click)="back()">
+              <i style="font-size: .875rem;" class="fas fa-sign-out-alt"></i></button>
+          </div>
+      </div>
+  </nav>
+</header>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-12 mx-auto py-4">
+      <div class="card">
+        <div class="card-header">
+          <div class="row p-1">
+            <div class="col-12 m-0 p-0 text-start my-auto">
+              <p class="m-1" style="text-transform:capitalize" *ngIf="!isLoading">{{test[0].test_name}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="!isLoading">
+          <div class="alert" role="alert">
+            <div [innerHtml]="test[0].instructions"></div>
+          </div>
+        </div>
+        <div class="card-footer"*ngIf="!isLoading">
+          <div class="row">
+            <div class="col-12  text-center px-0">
+              <button type="submit" class="btn btn-success"
+                (click)="start()" *ngIf="startBtn">Start Test
+              </button>
+              <button class="btn btn-primary" type="button" disabled *ngIf="!startBtn">
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Preparing Test ...
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="isLoading == true">
+          <div class="alert" role="alert">
+            <div class="row">
+              <div class="col-12">
+                <h4 class=" text-center">loading ...</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

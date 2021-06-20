@@ -1,0 +1,364 @@
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+  <div class="container-fluid">
+      <div class="navbar-brand">
+        <img src="assets/images/logo.png" height="32"alt="">
+        <span class="mob-hide" style="text-transform: capitalize;"> | {{test_name}}</span>
+      </div>
+      <div class="text-end">
+          <button class="btn mx-1 login-btn" (click)="exit()" style="border:none"><i class="fas fa-home"></i></button>
+      </div>
+  </div>
+</nav>
+
+<div class="container pannel" *ngIf="!isResult">
+  <div class="row h-100">
+    <div class="col-md-12 col-lg-9 my-auto">
+      <div class="card" *ngIf="qarray.length>0">
+        <div class="card-header">
+          <div class="row p-1">
+            <div class="col-4 m-0 p-0 text-start my-auto">
+              <p class="m-0">
+                Question {{qarray[counter].qno}}
+              </p>
+            </div>
+            <div class="col-4 m-0 p-0 text-center my-auto">
+              <p class="m-0">
+                <countdown [config]="duration" (event)="onTimesUp($event)"></countdown>
+              </p>
+            </div>
+            <div class="col-4 m-0 p-0 text-end my-auto">
+              <p class="m-0 questions-nav-btn">
+                <span style="padding-right: 20px;">
+                  <i class="fas fa-info-circle" data-bs-toggle="modal" data-bs-target="#InstructionsModal"></i>
+                </span>
+                <span>
+                  <i class="fas fa-bars" data-bs-toggle="offcanvas" href="#MobQNav" role="button"
+                    aria-controls="MobQNav"></i>
+                </span>
+              </p>
+            </div>
+          </div>
+
+
+        </div>
+        <div class="card-body question">
+          <div class="alert alert-light m-0" role=" alert">
+            <div *ngIf="qarray[counter].question" [innerHtml]="qarray[counter].question | safeHtml"></div>
+          </div>
+          <hr>
+          <form class="row g-3" [formGroup]="qform" (ngSubmit)="next(qarray[counter].qno);" #qForm="ngForm">
+            <div class="col-md-6">
+              <input class="form-check-input" type="radio" name="answer" value="option1" id="option1"
+                formControlName="answer" (change)="changeOption($event, qarray[counter].qno, qarray[counter].id)">
+              <label class="form-check-label mx-2" for="option1" *ngIf="qarray"
+                [innerHtml]="qarray[counter].option1 | safeHtml">
+              </label>
+            </div>
+            <div class="col-md-6">
+              <input class="form-check-input" type="radio" name="answer" value="option2" id="option2"
+                formControlName="answer" (change)="changeOption($event, qarray[counter].qno, qarray[counter].id)">
+              <label class="form-check-label mx-2" for="option2" *ngIf="qarray"
+                [innerHtml]="qarray[counter].option2 | safeHtml">
+              </label>
+            </div>
+            <div class="col-md-6">
+              <input class="form-check-input" type="radio" name="answer" value="option3" id="option3"
+                formControlName="answer" (change)="changeOption($event, qarray[counter].qno, qarray[counter].id)">
+              <label class="form-check-label mx-2" for="option3" *ngIf="qarray"
+                [innerHtml]="qarray[counter].option3 | safeHtml">
+              </label>
+            </div>
+            <div class="col-md-6">
+              <input class="form-check-input" type="radio" name="answer" value="option4" id="option4"
+                formControlName="answer" (change)="changeOption($event, qarray[counter].qno, qarray[counter].id)">
+              <label class="form-check-label mx-2" for="option4" *ngIf="qarray"
+                [innerHtml]="qarray[counter].option4 | safeHtml">
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-4 text-start my-auto px-0">
+              <button type="submit" class="btn btn-primary" style="margin: auto;"
+                (click)="previous(qarray[counter].qno);"><i class="fas fa-arrow-left"></i></button>
+              <button type="submit" class="btn btn-warning" style="margin: 2px;" (click)="clear(qarray[counter].qno);"
+                data-bs-toggle="tooltip" data-bs-placement="left" title="CLear response"><i
+                  class="far fa-trash-alt"></i></button>
+            </div>
+            <div class="col-4 text-center my-auto px-sm-0">
+              <button type="submit" class="btn btn-danger" style="margin: auto;" (click)="submit();">Submit</button>
+            </div>
+            <div class="col-4 text-end my-auto px-sm-0">
+              <button type="submit" class="btn btn-warning" style="margin: 2px;" (click)="review(qarray[counter].qno);"
+                data-bs-toggle="tooltip" data-bs-placement="left" title="Mark for review"><i
+                  class="far fa-bookmark"></i></button>
+              <button type="submit" class="btn btn-primary" style="margin: auto;" (click)="qForm.ngSubmit.emit()"><i
+                  class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card" *ngIf="qarray.length == 0">
+        <div class="card-body question">
+          <div style="position: absolute; left: 50%; transform: translate(-50%, -50%); top: 50%; min-width: 80%;">
+            <div class="text-center">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p>Pease wait while test is loading</p>
+              <p><strong>Please do not refresh/ reload the page</strong></p>
+              <p>Going back or reloading the page will destroy the progress</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-12 col-lg-3 my-auto questions-nav">
+      <div class="card h-100">
+        <div class="card-header">
+          <p class="m-0 p-1">Navigate to questions</p>
+        </div>
+        <div class="card-body questions-list">
+          <ul class="row m-0 p-0 justify-content-center" style="list-style: none;">
+            <li class="col-2 qbubble" [class.done]="q.answer != null && q.for_review != true"
+              [class.review]="q.answer != null && q.for_review == true"
+              [class.mark]="q.answer == null && q.for_review == true" (click)="navigateTo(q.qno-1)"
+              *ngFor="let q of qarray;">{{q.qno}}</li>
+          </ul>
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-12 text-center my-auto">
+              <button class="btn btn-primary" style="margin: auto;" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#InstructionsModal">Instructions</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="container pannel" *ngIf="isResult">
+  <div class="row h-100">
+    <div class="col-12 my-auto">
+      <div class="card">
+        <div class="card-header">
+          <div class="row p-1">
+            <div class="col-4 m-0 p-0 text-start my-auto">
+              <p class="m-0">
+                Result
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="card-body question" *ngIf="!isresultloading">
+          <div style="position: absolute; left: 50%; transform: translate(-50%, -50%); top: 50%; min-width: 80%;" *ngIf="slug.split('-')[0] !== 'wbjee'" >
+            <div class="progress" attr.data-percentage="{{result.percentageScore}}">
+              <span class="progress-left">
+                <span class="progress-bar"></span>
+              </span>
+              <span class="progress-right">
+                <span class="progress-bar"></span>
+              </span>
+              <div class="progress-value">
+                <div>
+                  <h2 class="m-0">
+                    {{result.score}} / {{result.totalScore}}
+                  </h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive pt-3">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Correct</th>
+                    <th scope="col">Incorrect</th>
+                    <th scope="col">Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">Maths</th>
+                    <td>{{result.mathsCorrectScore}}</td>
+                    <td>{{result.mathsIncorrectScore}}</td>
+                    <td>{{result.mathsCorrectScore - result.mathsIncorrectScore}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Physics</th>
+                    <td>{{result.physicsCorrectScore}}</td>
+                    <td>{{result.physicsIncorrectScore}}</td>
+                    <td>{{result.physicsCorrectScore - result.physicsIncorrectScore}}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Chemistry</th>
+                    <td>{{result.chemistryCorrectScore}}</td>
+                    <td>{{result.chemistryIncorrectScore}}</td>
+                    <td>{{result.chemistryCorrectScore - result.chemistryIncorrectScore}}</td>
+                  </tr>
+                  <tr>
+                    <th colspan="3">Total Negative Score</th>
+                    <th scope="col">-{{result.negativeScore}}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="3">Total Score out of {{result.totalScore}}</th>
+                    <th scope="col">{{result.score}}</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div style="position: absolute; left: 50%; transform: translate(-50%, -50%); top: 50%; min-width: 80%;" *ngIf="slug.split('-')[0] === 'wbjee'" >
+            <div class="progress" attr.data-percentage="{{result.percentageScore}}">
+              <span class="progress-left">
+                <span class="progress-bar"></span>
+              </span>
+              <span class="progress-right">
+                <span class="progress-bar"></span>
+              </span>
+              <div class="progress-value">
+                <div>
+                  <h2 class="m-0" *ngIf="!ismaths">
+                    {{result.chemistry.totalScoreC + result.physics.totalScoreP }} / 100
+                  </h2>
+                  <h2 class="m-0" *ngIf="ismaths">
+                    {{result.maths.totalScore }} / 100
+                  </h2>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive pt-3">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Subject</th>
+                    <th scope="col">Section 1</th>
+                    <th scope="col">Section 2</th>
+                    <th scope="col">Section 3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="!ismaths">
+                    <th scope="row">Chemistry</th>
+                    <td>{{result.chemistry.section1cs}}
+                      [ {{result.chemistry.section1cc}} ,
+                        -{{result.chemistry.section1cn}} ]</td>
+                    <td>{{result.chemistry.section2cs}}
+                      [ {{result.chemistry.section2cc}} ,
+                        -{{result.chemistry.section2cn}} ]</td>
+                    <td>{{result.chemistry.section3cs}}
+                      [ {{result.chemistry.section3cc}} ,
+                        -{{result.chemistry.section3cn}} ]</td>
+                  </tr>
+                  <tr *ngIf="!ismaths">
+                    <th scope="row">Physics</th>
+                    <td>{{result.physics.section1ps}}
+                      [ {{result.physics.section1pc}} ,
+                        -{{result.physics.section1pn}} ]</td>
+                    <td>{{result.physics.section2ps}}
+                      [ {{result.physics.section2pc}} ,
+                        -{{result.physics.section2pn}} ]</td>
+                    <td>{{result.physics.section3ps}}
+                      [ {{result.physics.section3pc}} ,
+                        -{{result.physics.section3pn}} ]</td>
+                  </tr>
+                  <tr *ngIf="ismaths">
+                    <th scope="row">Maths</th>
+                    <td>{{result.maths.section1s}}
+                      [ {{result.maths.section1c}} ,
+                        -{{result.maths.section1n}} ]</td>
+                    <td>{{result.maths.section2s}}
+                      [ {{result.maths.section2c}} ,
+                        -{{result.maths.section2n}} ]</td>
+                    <td>{{result.maths.section3s}}
+                      [ {{result.maths.section3c}} ,
+                        -{{result.maths.section3n}} ]</td>
+                  </tr>
+                  <tr *ngIf="!ismaths">
+                    <th colspan="3">Total Score out of 100</th>
+                    <th scope="col">{{result.chemistry.totalScoreC + result.physics.totalScoreP }}</th>
+                  </tr>
+                  <tr *ngIf="ismaths">
+                    <th colspan="3">Total Score out of 100</th>
+                    <th scope="col">{{result.maths.totalScore }}</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card-body question" *ngIf="isresultloading">
+          <div style="position: absolute; left: 50%; transform: translate(-50%, -50%); top: 45%; min-width: 80%;">
+
+            <div class="text-center">
+              <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <div class="mt-2">
+                <p>loading ...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer" *ngIf="!isresultloading">
+          <div class="row">
+            <div class="col-12 text-center my-auto px-sm-0">
+              <button type="submit" class="btn btn-danger" style="margin: auto;"
+              (click)="exit();">Home</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+ <!-- Question navigation for mobile -->
+<div class="offcanvas offcanvas-start" data-bs-backdrop="false" tabindex="-1" id="MobQNav"
+  aria-labelledby="MobQNavLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="MobQNavLabel">Navigate to questions</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul class="row m-0 p-0 justify-content-center" style="list-style: none;">
+      <li class="col-2 qbubble" [class.done]="q.answer != null && q.for_review != true"
+        [class.review]="q.answer != null && q.for_review == true"
+        [class.mark]="q.answer == null && q.for_review == true" (click)="navigateTo(q.qno-1)" *ngFor="let q of qarray;">
+        {{q.qno}}</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- Instrutions Modal -->
+<div class="modal fade" id="InstructionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="InstructionsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="InstructionsModalLabel">Instructions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div [innerHtml]="instructions"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,136 @@
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img src="assets/images/logo.png" height="32"alt="">
+        </a>
+        <div class="text-end">
+            <button class="btn mx-1 login-btn">Login</button>
+            <button class="btn mx-1 sign-up-btn">Sing up</button>
+        </div>
+    </div>
+</nav>
+</header>
+
+<main>
+
+
+  <div class="container pannel " *ngIf="!loadingtest">
+    <div class="row h-100">
+      <div class="col-md-12 col-lg-6 mx-auto my-4 mob-hide">
+        <img src="assets/images/options-setting.svg" class="img-fluid pt-5" alt="">
+      </div>
+      <div class="col-md-12 col-lg-6 mx-auto my-4" *ngIf="isloading">
+        <h3 class="p-5">
+          Test Options are looading ...
+        </h3>
+      </div>
+      <div class="col-md-12 col-lg-6 mx-auto my-4" *ngIf="!isloading">
+        <div class="card">
+          <div class="card-header">
+            <div class="row p-1">
+              <div class="col-12 m-0 p-0 text-start my-auto">
+                <p class="m-0" *ngIf="mockTest">
+                  {{mockTest[0].test_name |uppercase}}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-light m-0" role=" alert">
+              Select the duration and difficulty level for the {{mockTest[0].test_name}} mock test
+            </div>
+            <hr>
+            <form class="row g-3 text-center" [formGroup]="cform" #qForm="ngForm" (ngSubmit)="next()">
+              <div class="col-6">
+                <p>Chosse duration</p>
+                <div class="row text-center" *ngFor="let duration of mockTest[0].durations">
+                  <div class="col-12 m-1">
+                    <input type="radio" class="btn-check" name="duration" id="{{duration.split(':')[0]}}"
+                      formControlName="duration" value="{{duration}}" autocomplete="off">
+                    <label class="btn btn-outline-info config-btn"
+                      for="{{duration.split(':')[0]}}">{{duration.split(':')[0]}} Mins</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <p>Chosse level</p>
+                <div class="row text-center" *ngFor="let level of mockTest[0].levels">
+                  <div class="col-12 m-1">
+                    <input type="radio" class="btn-check" name="level" id="{{level}}" formControlName="level"
+                      value="{{level}}" autocomplete="off">
+                    <label class="btn btn-outline-danger config-btn" for="{{level}}">{{level | titlecase }}</label>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-6 text-start my-auto" [routerLink]="['/']">
+                <button type="submit" class="btn btn-primary" style="margin: auto;">
+                  <i class="fas fa-arrow-left"></i></button>
+              </div>
+              <div class="col-6  text-end my-auto px-0">
+                <button type="submit" class="btn btn-success" (click)="qForm.ngSubmit.emit()"
+                  style="margin: auto;">Next</button>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="container pannel" *ngIf="loadingtest">
+    <div class="row h-100">
+      <div class="col-md-12 col-lg-10 mx-auto my-4">
+        <div class="card">
+          <div class="card-header">
+            <div class="row p-1">
+              <div class="col-12 m-0 p-0 text-start my-auto">
+                <p class="m-0" *ngIf="mockTest">
+                  Instructions for {{mockTest[0].test_name}}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div [innerHtml]="instructions">
+
+            </div>
+          </div>
+          <div class="card-footer">
+            <div class="row">
+              <div class="col-4 text-start my-auto">
+                <button type="submit" class="btn btn-primary" style="margin: auto;" (click)="back()">
+                  <i class="fas fa-arrow-left"></i></button>
+              </div>
+              <div class="col-8  text-end my-auto px-0">
+                <button type="submit" class="btn btn-success" *ngIf="startBtn"
+                  style="margin: auto;">Start Test
+                </button>
+                <button class="btn btn-primary" type="button" disabled *ngIf="!startBtn">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Test is Loading...
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="text-muted py-2">
+  <div class="container text-center">
+    <hr class="m-1">
+    <p class="mb-1">&copy; Copyright College Option. All Rights Reserved</p>
+    <p class="mb-0">Developed by <a href="/">Akola Digital</a></p>
+  </div>
+</footer>

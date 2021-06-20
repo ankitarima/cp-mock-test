@@ -1,0 +1,155 @@
+<div class="container pt-5 " style="min-height: 68vh;">
+  <div class="row">
+    <div class="text-center m-2">
+      <h3>Hi, {{user.displayName}}</h3>
+    </div>
+  </div>
+  <div class="row">
+      <div style="position: absolute; left: 50%; transform: translate(-50%, -50%); top: 45%; min-width: 80%;" *ngIf="isloading">
+        <div class="text-center">
+          <div class="spinner-grow text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <div class="mt-2">
+            <p>loading ...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col" *ngIf="!isloading">
+          <div class="accordion" id="results">
+              <div class="accordion-item" *ngFor="let result of results;;let i=index;">
+                <h2 class="accordion-header" id="{{i}}">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                  [attr.data-bs-target]="'#'+result.test_slug+i" aria-expanded="true" [attr.aria-controls]="result.test_slug+i">
+                    <span style="color:#10375c; padding-right: 5px; font-size: 14px;">
+                      <i class="far fa-calendar-alt"></i>{{result.created_at.toDate()|date}}
+                    </span>
+                    {{result.test_name |titlecase}}
+                  </button>
+                </h2>
+                <div id="{{result.test_slug+i}}" class="accordion-collapse collapse show" [attr.aria-labelledby]="i" data-bs-parent="#results">
+                  <div class="accordion-body">
+                    <div class="table-responsive pt-3">
+                      <table class="table table-bordered" *ngIf="result.result.maths == undefined && result.result.physics == undefined">
+                        <thead>
+                          <tr>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Correct</th>
+                            <th scope="col">Incorrect</th>
+                            <th scope="col">Score</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">Maths</th>
+                            <td>{{result.result.mathsCorrectScore}}</td>
+                            <td>{{result.result.mathsIncorrectScore}}</td>
+                            <td>{{result.result.mathsCorrectScore - result.result.mathsIncorrectScore}}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Physics</th>
+                            <td>{{result.result.physicsCorrectScore}}</td>
+                            <td>{{result.result.physicsIncorrectScore}}</td>
+                            <td>{{result.result.physicsCorrectScore - result.result.physicsIncorrectScore}}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Chemistry</th>
+                            <td>{{result.result.chemistryCorrectScore}}</td>
+                            <td>{{result.result.chemistryIncorrectScore}}</td>
+                            <td>{{result.result.chemistryCorrectScore - result.result.chemistryIncorrectScore}}</td>
+                          </tr>
+                          <tr>
+                            <th colspan="3">Total Negative Score</th>
+                            <th scope="col">-{{result.result.negativeScore}}</th>
+                          </tr>
+                          <tr>
+                            <th colspan="3">Total Score out of {{result.result.totalScore}}</th>
+                            <th scope="col">{{result.result.score}}</th>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table class="table table-bordered" *ngIf="result.result.maths != undefined && result.result.physics == undefined">
+                        <thead>
+                          <tr>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Section 1</th>
+                            <th scope="col">Section 2</th>
+                            <th scope="col">Section 3</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">Maths</th>
+                            <td>{{result.result.maths.section1s}}
+                              [ {{result.result.maths.section1c}} ,
+                                -{{result.result.maths.section1n}} ]</td>
+                            <td>{{result.result.maths.section2s}}
+                              [ {{result.result.maths.section2c}} ,
+                                -{{result.result.maths.section2n}} ]</td>
+                            <td>{{result.result.maths.section3s}}
+                              [ {{result.result.maths.section3c}} ,
+                                -{{result.result.maths.section3n}} ]</td>
+                          </tr>
+                          <tr>
+                            <th colspan="3">Total Score out of 100</th>
+                    <th scope="col">{{result.result.maths.totalScore }}</th>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table class="table table-bordered" *ngIf="result.result.maths == undefined && result.result.physics != undefined">
+                        <thead>
+                          <tr>
+                            <th scope="col">Subject</th>
+                            <th scope="col">Section 1</th>
+                            <th scope="col">Section 2</th>
+                            <th scope="col">Section 3</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">Physics</th>
+                            <td>{{result.result.physics.section1ps}}
+                              [ {{result.result.physics.section1pc}} ,
+                                -{{result.result.physics.section1pn}} ]</td>
+                            <td>{{result.result.physics.section2ps}}
+                              [ {{result.result.physics.section2pc}} ,
+                                -{{result.result.physics.section2pn}} ]</td>
+                            <td>{{result.result.physics.section3ps}}
+                              [ {{result.result.physics.section3pc}} ,
+                                -{{result.result.physics.section3pn}} ]</td>
+                          </tr>
+                          <tr >
+                            <th scope="row">Chemistry</th>
+                            <td>{{result.result.chemistry.section1cs}}
+                              [ {{result.result.chemistry.section1cc}} ,
+                                -{{result.result.chemistry.section1cn}} ]</td>
+                            <td>{{result.result.chemistry.section2cs}}
+                              [ {{result.result.chemistry.section2cc}} ,
+                                -{{result.result.chemistry.section2cn}} ]</td>
+                            <td>{{result.result.chemistry.section3cs}}
+                              [ {{result.result.chemistry.section3cc}} ,
+                                -{{result.result.chemistry.section3cn}} ]</td>
+                          </tr>
+                          <tr>
+                            <th colspan="3">Total Score out of 100</th>
+                            <th scope="col">{{result.result.chemistry.totalScoreC + result.result.physics.totalScoreP }}</th>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+<footer class=" mt-auto text-muted py-2">
+  <hr>
+  <div class="container text-center">
+      <p class="mb-1">&copy; Copyright College Option. All Rights Reserved</p>
+      <p class="mb-0">Developed by <a href="/">Akola Digital</a></p>
+  </div>
+</footer>

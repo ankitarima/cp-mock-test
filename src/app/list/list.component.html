@@ -1,0 +1,51 @@
+<div class="px-4 py-5 my-5 text-center">
+  <!-- <img class="d-block mx-auto mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
+  <h1 class="display-5 fw-bold">{{category[0].mock_test_category}}</h1>
+  <div class="col-lg-6 mx-auto">
+    <p class="lead mb-4 t-decription">{{category[0].description}}</p>
+  </div>
+
+  <div class="col-lg-8 mx-auto py-4">
+    <div class="card">
+      <div class="card-header">
+        <div class="row p-1">
+          <div class="col-12 m-0 p-0 text-start my-auto">
+            <p class="counter-title m-1">{{tests.length}} Practice sets</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-body" *ngIf="!isLoading">
+        <div class="alert test-list" role="alert" *ngFor="let test of tests">
+          <div class="row">
+            <div class="col-sm-12 col-md-8">
+              <h4 class="test-title">{{test.test_name}}</h4>
+              <div class="test-details-container">
+                  <div>
+                    {{test.total_questions}} Questions
+                  </div>
+                  <div>
+                    {{test.total_score}} marks
+                  </div>
+                  <div>
+                    {{test.total_duration}} Mins
+                  </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-4 test-btn-container">
+              <Button class="btn test-start-btn" [routerLink]="['/test/'+test.slug]" routerLinkActive="router-link-active" >Start Now</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body" *ngIf="isLoading == true">
+        <div class="alert test-list" role="alert">
+          <div class="row">
+            <div class="col-12">
+              <h4 class="test-title text-center">{{message}}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

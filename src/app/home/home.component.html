@@ -1,0 +1,54 @@
+<main>
+
+  <section class="text-center container hero">
+      <div class="row py-lg-5">
+          <div class="col-lg-6" >
+              <h1 class="cp-title">College Option Mock Test</h1>
+              <h3 class="cp-title-tag">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate excepturi sint, sed expedita assumenda inventore</h3>
+              <p class="lead cp-lead text-muted">Boost your exam preparation with Test Series for All major engnerring entrace exmas JEE MAINS, VIT, COMDEK, and many more</p>
+          </div>
+          <div class="col-lg-6">
+            <img src="assets/images/home-img.svg" alt="" class="img-fluid">
+          </div>
+      </div>
+  </section>
+
+  <div id="all" class="album py-5">
+      <div class="container">
+
+          <div class="row" >
+              <div class="col-lg-3 col-md-6 col-sm-12 p-2" *ngFor="let test of mockTests">
+                  <div class="card cp-card shadow-sm">
+
+                      <div>
+                        <img [src]="test.featured_image || placeholderImg" class="img-fluid" alt="">
+                      </div>
+
+                      <div class="card-body cp-card-body">
+                          <div class="card-text">
+                          <h2 class="test-title">{{test.mock_test_category}}</h2>
+                          <p><small class="text-muted">10 Practice Sets</small></p>
+                          </div>
+                          <div class="start-btn">
+                              <div class="btn-group">
+                                  <a [routerLink]="['/tests/'+ test.slug]">
+                                      <button type="button" class="btn btn-sm btn-outline-success" style="border-radius: 0px;">View Test Series</button>
+                                  </a>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</main>
+
+<footer class="text-muted py-2">
+  <div class="container text-center">
+      <hr>
+      <p class="mb-1">&copy; Copyright College Option. All Rights Reserved</p>
+      <p class="mb-0">Developed by <a href="/">Akola Digital</a></p>
+  </div>
+</footer>
